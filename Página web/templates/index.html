@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokéSearch - 2</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f0f8ff;
+        }
+
+        #searchForm {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        #searchForm input {
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #searchForm button {
+            border-radius: 10px;
+            font-size: 1.1em;
+        }
+
+        h1 {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        footer {
+            margin-top: 50px;
+        }
+
+        img.bouncing {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .pokemon-card {
+            background-color: {{ pokemon_card_color }};
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            transition: none;
+            margin-bottom: 20px;
+        }
+
+        .pokemon-card img {
+            width: 150px;
+            height: 150px;
+        }
+
+        .pokemon-card h5 {
+            margin: 10px 0;
+            font-size: 20px;
+            text-transform: capitalize;
+            font-weight: bold;
+        }
+
+        .pokemon-card .stats {
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .pokemon-card .stats ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .pokemon-card .stats ul li {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+            font-weight: 300;
+        }
+
+        /* Estilo del botón de regreso */
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #66BB6A;
+        }
+
+        /* Footer estilos */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 14px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        footer a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="height: 100vh; display: flex; justify-content: center; align-items: center;">
+        <div style="text-align: center;">
+            <img class="bouncing" src="{{ url_for('static', filename='img/pokebola.png') }}" width="150" height="150" alt="Pokebola">
+            <header>
+                <h1 style="font-size: 5em;">PokéSearch</h1>
+            </header>
+            <main>
+                <form id="searchForm" method="get" style="display: flex; justify-content: center; align-items: center;">
+                    <input type="text" id="query" name="query" placeholder="Enter Pokémon's Name" style="width: 250px; height: 32px; font-size: 1.2em; text-align: center; margin-right: 10px;">
+                    <button type="submit" class="btn btn-outline-primary" style="height: 34px;">Buscar</button>
+                </form>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('searchForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Evitar que se envíe el formulario de manera convencional
+
+                var query = document.getElementById('query').value.trim().toLowerCase(); // Convertir el nombre a minúsculas
+                if (query !== '') {
+                    // Realiza la llamada a la API
+                    fetch(`/buscar?query=${encodeURIComponent(query)}`)
+                        .then(response => {
+                            // Verifica si la respuesta es un error 404 o similar
+                            if (!response.ok) {
+                                return response.json().then(data => { // Si la respuesta no es ok, lanza un error
+                                    throw new Error(data.error || 'Error al buscar Pokémon');
+                                });
+                            }
+                            // Si la búsqueda es exitosa, redirige a la página del Pokémon
+                            return response.json(); // Procesar como JSON si está bien
+                        })
+                        .then(data => {
+                            // Redirigir a la página del Pokémon solicitado
+                            window.location.href = `/pokemon/${data.name}`; // Redirige a la URL que muestra los detalles del Pokémon
+                        })
+                        .catch(error => {
+                            console.error('Error:', error); // Manejar errores
+                            alert(error.message); // Mostrar el mensaje de error al usuario
+                        });
+                }
+            });
+        });
+        
+    </script>
+
+    <main>
+        <div class="container">
+            <div class="row">
+                {% for pokemon in pokemon_list %}
+                <div class="col-md-4 text-center">
+                    <div class="pokemon-card" style="background-color: {{ tipo_colores.get(pokemon.types[0], '#FFFFFF') }};">
+                        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ pokemon.id }}.png" class="card-img-top" alt="{{ pokemon.name }} Sprite">
+                        <h5 class="card-title">{{ pokemon.name }}</h5>
+                        <p class="number">#{{ pokemon.id }}</p>
+                        <p class="card-text"> 
+                            {% for tipo in pokemon.types %}
+                            {{ tipo.capitalize() }} {{ tipo_emojis.get(tipo, '') }}
+                            {% endfor %}
+                        </p>
+                        <div class="stats">
+                            <th colspan="2">Stats</th>
+                            <ul>
+                                <li><strong>HP:</strong> <span>{{ pokemon_hp }}</span></li>
+                                <li><strong>Attack:</strong> <span>{{ pokemon_atk }}</span></li>
+                                <li><strong>Defense:</strong> <span>{{ pokemon_def }}</span></li>
+                                <li><strong>Special Attack:</strong> <span>{{ pokemon_satk }}</span></li>
+                                <li><strong>Special Defense:</strong> <span>{{ pokemon_sdef }}</span></li>
+                                <li><strong>Speed:</strong> <span>{{ pokemon_spe }}</span></li>
+                                <li><strong>Total:</strong> <span>{{ pokemon_total_stat }}</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div class="container">
+        <footer class="pb-3 my-4">
+            <p class="text-center text-body-secondary">
+                ©2024 PokeSearch |
+                <a href="https://github.com/ZamRom/PokeSearch" target="_blank">GitHub</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gyb8KiJCMb9hAq1Dkg7n+cTo9jzF7ZT1zVjIFv9m2wG+E7hTkL" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-za1O2QlbP0zrYzR2JaAkkxU25cYQk9XBXK+XgLIdzR1F94IDDaGqHDhWZB0Gz1gA" crossorigin="anonymous"></script>
+</body>
+
+</html>
