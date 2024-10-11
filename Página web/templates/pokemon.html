@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokeSearch - {{ pokemon_name.capitalize() }}</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Estilo para todas las tarjetas con fondo verde pastel */
+        .pokemon-card {
+            background-color: #abf1ab;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            max-width: 250px;
+            margin: 40px auto;
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+        .pokemon-card img {
+            width: 150px;
+            height: 150px;
+        }
+        .pokemon-card h1 {
+            margin: 0;
+            font-size: 24px;
+            text-transform: capitalize;
+            font-weight: bold;  /* Solo el nombre del Pokémon en negrita */
+        }
+        .pokemon-card .number {
+            font-size: 18px;
+            color: #555;
+            font-weight: 300; /* Más ligero */
+        }
+        .pokemon-card .types {
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-weight: 300; /* Más ligero */
+        }
+        .pokemon-card .types span {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #eee;
+            border-radius: 10px;
+            margin-right: 5px;
+            text-transform: capitalize;
+        }
+        .pokemon-card .stats {
+            text-align: left;
+            margin-top: 20px;
+        }
+        .pokemon-card .stats th {
+            font-weight: bold; /* Negritas solo para "Stats" */
+            text-align: left;
+            font-size: 16px;
+        }
+        .pokemon-card .stats ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .pokemon-card .stats ul li {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+            font-weight: 300;  /* Todos los stats serán más ligeros */
+        }
+        .pokemon-card .stats ul li strong {
+            font-weight: bold;  /* Negritas para los nombres de los stats */
+        }
+
+        /* Estilo para el botón "Regresar a la página principal" */
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50; /* Verde bonito */
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+        .back-button:hover {
+            background-color: #66BB6A; /* Verde más claro al pasar el ratón */
+            transform: translateY(-3px); /* Efecto de elevación al pasar el ratón */
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <div class="pokemon-card">
+            <img src="{{ pokemon_sprite }}" alt="{{ pokemon_name }} Sprite">
+            <h1>{{ pokemon_name }}</h1>
+            <p class="number">#{{ pokemon_id }}</p>
+
+            <!-- Mostrar tipos del Pokémon -->
+            <div class="types">
+                {% for tipo in pokemon_types %}
+                    <th>{{ tipo }}</th>
+                {% endfor %}
+            </div>
+
+            <div class="stats">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Stats</th> <!-- Negritas solo para "Stats" -->
+                        </tr>
+                    </thead>
+                </table>
+                <ul>
+                    <li><strong>Hp</strong> <span>{{ pokemon_hp }}</span></li>
+                    <li><strong>Attack</strong> <span>{{ pokemon_atk }}</span></li>
+                    <li><strong>Defense</strong> <span>{{ pokemon_def }}</span></li>
+                    <li><strong>Special-Attack</strong> <span>{{ pokemon_satk }}</span></li>
+                    <li><strong>Special-Defense</strong> <span>{{ pokemon_sdef }}</span></li>
+                    <li><strong>Speed</strong> <span>{{ pokemon_spe }}</span></li>
+                    <li><strong>Total</strong> <span>{{ pokemon_total_stat }}</span></li>
+                </ul>
+            </div>
+
+            <!-- Botón para regresar a la página principal -->
+            <a href="{{ url_for('index') }}" class="back-button">Regresar a la página principal</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>Creado con amor por PokeSearch.</p>
+    </footer>
+</body>
+</html>
