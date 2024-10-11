@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokeSearch - {{ pokemon_name.capitalize() }}</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='img/pokebola.png') }}" alt="Pokebola" width="150" height="150">
+        <h1>{{ pokemon_name.capitalize() }}</h1> <!-- Aquí se muestra el nombre del Pokémon -->
+    </header>
+
+    <main>
+        <p>¡Has encontrado a {{ pokemon_name.capitalize() }}!</p>
+        <!-- Aquí puedes agregar más información sobre el Pokémon -->
+    </main>
+
+    <footer>
+        <p>Regresar a la <a href="{{ url_for('index') }}">página principal</a>.</p>
+    </footer>
+</body>
+</html>
