@@ -9,13 +9,25 @@
 </head>
 <body>
     <header>
-        <img src="{{ url_for('static', filename='img/pokebola.png') }}" alt="Pokebola" width="150" height="150">
+        <img src="{{ pokemon_sprite }}" alt="{{ pokemon_name }} Sprite" width="150" height="150">
         <h1>{{ pokemon_name.capitalize() }}</h1> <!-- Aquí se muestra el nombre del Pokémon -->
     </header>
 
     <main>
         <p>¡Has encontrado a {{ pokemon_name.capitalize() }}!</p>
-        <!-- Aquí puedes agregar más información sobre el Pokémon -->
+
+        <!-- Mostrar las estadísticas del Pokémon -->
+        <ul>
+            <li>Peso: {{ pokemon_weight }} kg</li>
+            <li>Altura: {{ pokemon_height }}</li>
+            <li>HP: {{ pokemon_hp }}</li>
+            <li>Ataque: {{ pokemon_atk }}</li>
+            <li>Defensa: {{ pokemon_def }}</li>
+            <li>Ataque Especial: {{ pokemon_satk }}</li>
+            <li>Defensa Especial: {{ pokemon_sdef }}</li>
+            <li>Velocidad: {{ pokemon_spe }}</li>
+            <li>Estadísticas Totales: {{ pokemon_total_stat }}</li>
+        </ul>
     </main>
 
     <footer>

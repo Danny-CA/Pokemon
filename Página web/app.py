@@ -37,10 +37,28 @@ def buscar_pokemon():
 
 
 
-# Ruta para mostrar detalles del Pokémon (simulado)
 @app.route('/pokemon/<name>')
 def mostrar_pokemon(name):
-    return render_template('pokemon.html', pokemon_name=name)  
+    conn = get_db_connection()
+    pokemon = conn.execute('SELECT * FROM pokemon WHERE lower(name) = ?', (name.lower(),)).fetchone()
+    conn.close()
+
+    if pokemon:
+        return render_template('pokemon.html', 
+                               pokemon_name=pokemon['name'],
+                               pokemon_weight=pokemon['weight'],
+                               pokemon_height=pokemon['height'],
+                               pokemon_hp=pokemon['hp'],
+                               pokemon_atk=pokemon['atk'],
+                               pokemon_def=pokemon['def'],
+                               pokemon_satk=pokemon['satk'],
+                               pokemon_sdef=pokemon['sdef'],
+                               pokemon_spe=pokemon['spe'],
+                               pokemon_total_stat=pokemon['total_stat'],
+                               pokemon_sprite=pokemon['sprite']
+                               )
+    else:
+        return render_template('404.html'), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
