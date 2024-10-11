@@ -1,0 +1,43 @@
+import os
+import sqlite3
+from flask import Flask, request, jsonify, render_template
+
+app = Flask(__name__)
+
+# Función para conectar a la base de datos
+def get_db_connection():
+    db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'PokeSearch.sqlite3')
+    conn = sqlite3.connect(db_path)  # Usar la ruta absoluta del archivo de la base de datos
+    conn.row_factory = sqlite3.Row  # Permite obtener resultados como diccionarios
+    return conn
+
+# Ruta para la página principal que servirá el archivo HTML
+@app.route('/')
+def index():
+    return render_template('index.html')  # Asegúrate de que tu archivo HTML esté en la carpeta 'templates'
+
+# Ruta para buscar el Pokémon
+@app.route('/buscar')
+def buscar_pokemon():
+    query = request.args.get('query', '').lower()  # Obtener el parámetro de búsqueda y convertirlo a minúsculas
+    if query:
+        conn = get_db_connection()
+        # Buscar el nombre del Pokémon en la tabla 'pokemon'
+        pokemon = conn.execute('SELECT name FROM pokemon WHERE lower(name) = ?', (query,)).fetchone()
+        conn.close()
+
+        if pokemon:
+            # Devolver los datos del Pokémon encontrado (solo el nombre)
+            return jsonify({'name': pokemon['name']})
+        else:
+            # Si no se encuentra, devolver un error
+            return jsonify({'error': 'Pokémon no encontrado'}), 404
+    return jsonify({'error': 'Búsqueda vacía'}), 400
+
+# Ruta para mostrar detalles del Pokémon (simulado)
+@app.route('/pokemon/<name>')
+def mostrar_pokemon(name):
+    return f"Página del Pokémon {name.capitalize()}"
+
+if __name__ == '__main__':
+    app.run(debug=True)
